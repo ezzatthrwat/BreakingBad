@@ -1,8 +1,22 @@
 package me.ezzattharwat.breakingbad.di
 
+import com.google.gson.Gson
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import me.ezzattharwat.breakingbad.data.repository.AppRepository
+import me.ezzattharwat.breakingbad.data.repository.AppRepositoryImp
+import me.ezzattharwat.breakingbad.data.source.remotedata.ApiService
+import me.ezzattharwat.breakingbad.utils.Constant
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 
 /**
@@ -12,6 +26,42 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    @Singleton
+    @Provides
+    fun provideOkHttp(): OkHttpClient {
+        val requestTimeOut = 60L
+        val httpClient = OkHttpClient().newBuilder()
+                .connectTimeout(requestTimeOut, TimeUnit.SECONDS)
+                .readTimeout(requestTimeOut, TimeUnit.SECONDS)
+                .writeTimeout(requestTimeOut, TimeUnit.SECONDS)
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        httpClient.addInterceptor(interceptor)
+        httpClient.addInterceptor(Interceptor { chain: Interceptor.Chain ->
+            val original = chain.request()
+            val requestBuilder = original.newBuilder()
+                    .addHeader("Accept", "application/json")
+                    .addHeader("Content-Type", "application/json")
+            val request: Request = requestBuilder.build()
+            chain.proceed(request)
+        })
+        return httpClient.build()
+    }
 
+    @Singleton
+    @Provides
+    fun provideApiClient(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
+            .baseUrl(Constant.API_BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(Gson()))
+            .build()
+
+    @Singleton
+    @Provides
+    fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideAppRepositoryImp(apiService: ApiService) =  AppRepositoryImp(apiService) as AppRepository
 
 }
