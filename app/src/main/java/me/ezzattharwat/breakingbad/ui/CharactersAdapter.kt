@@ -12,10 +12,13 @@ import kotlinx.android.synthetic.main.characters_list_item.view.*
 import me.ezzattharwat.breakingbad.R
 import me.ezzattharwat.breakingbad.data.model.CharactersResponseItem
 import me.ezzattharwat.breakingbad.utils.CharactersDiffUtil
+import me.ezzattharwat.breakingbad.utils.DateUtils
+import me.ezzattharwat.breakingbad.utils.toGone
+import me.ezzattharwat.breakingbad.utils.toVisible
 
 class CharactersAdapter(private val context: Context) : RecyclerView.Adapter<CharactersAdapter.RecipeViewHolder>() {
 
-    private var characters: List<CharactersResponseItem> = listOf()
+    private var characters: List<CharactersResponseItem> = emptyList()
 
     fun setData(newCharacters: List<CharactersResponseItem>){
         val diffCallback = CharactersDiffUtil(characters, newCharacters)
@@ -44,9 +47,16 @@ class CharactersAdapter(private val context: Context) : RecyclerView.Adapter<Cha
             Glide.with(context).load(item.img).diskCacheStrategy(DiskCacheStrategy.ALL).into(itemView.characterImg)
 
             val characterName = "${item.name} (${item.nickname})"
+
             itemView.characterNameTV.text = characterName
 
-            itemView.characterAgeTV.text = item.birthday
+            if (item.birthday.matches("\\d{2}-\\d{2}-\\d{4}".toRegex())) {
+                itemView.characterAgeTV.text = DateUtils.getLiveAge(item.birthday)
+                itemView.textClockTV.toVisible()
+            } else {
+                itemView.characterAgeTV.text = item.birthday
+                itemView.textClockTV.toGone()
+            }
 
         }
     }

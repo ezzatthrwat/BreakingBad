@@ -10,6 +10,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import me.ezzattharwat.breakingbad.R
 import me.ezzattharwat.breakingbad.data.model.CharactersResponseItem
 import me.ezzattharwat.breakingbad.utils.*
+import timber.log.Timber
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 
@@ -28,15 +32,27 @@ class MainActivity : AppCompatActivity() {
 
         observeViewModel()
         setupRecyclerView()
-        mainViewModel.getCharactersList(rows = 10)
+        mainViewModel.getCharactersList()
+
     }
 
     private fun setupRecyclerView(){
 
-        charactersRV.layoutManager = GridLayoutManager(this, 2)
+        val layoutManager = GridLayoutManager(this, 2)
+        charactersRV.layoutManager = layoutManager
         charactersRV.setHasFixedSize(true)
         charactersRV.adapter = charactersAdapter
 
+        charactersRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val totalItemCount = layoutManager.itemCount
+                val visibleItemCount = layoutManager.childCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                mainViewModel.listScrolled(visibleItemCount, lastVisibleItem, totalItemCount)
+            }
+        })
 
     }
 
@@ -46,8 +62,12 @@ class MainActivity : AppCompatActivity() {
             Status.LOADING -> {
                 charactersPB.toVisible()
             }
+            Status.PAGINATING_LOADING -> {
+                charactersBottomPB.toVisible()
+            }
             Status.SUCCESS -> {
                 charactersPB.toGone()
+                charactersBottomPB.toGone()
                 resource.data?.let {
                     charactersAdapter.setData(it)
                 }
