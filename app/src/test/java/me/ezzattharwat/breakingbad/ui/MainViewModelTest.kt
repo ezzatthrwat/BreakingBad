@@ -5,12 +5,13 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import me.ezzattharwat.breakingbad.data.model.CharactersResponseItem
-import me.ezzattharwat.breakingbad.data.repository.CharactersRepoImp
+import me.ezzattharwat.breakingbad.data.repository.CharactersRepo
 import me.ezzattharwat.breakingbad.util.Errors.NETWORK_ERROR
 import me.ezzattharwat.breakingbad.util.MainCoroutineRule
 import me.ezzattharwat.breakingbad.util.Resource
 import me.ezzattharwat.breakingbad.util.TestModelsGenerator
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -21,7 +22,7 @@ class MainViewModelTest {
     private lateinit var mainViewModel: MainViewModel
 
     // Use a fake UseCase to be injected into the viewModel
-    private val charactersRepoImp: CharactersRepoImp = mockk()
+    private val charactersRepo: CharactersRepo = mockk()
 
     // Set the main coroutines dispatcher for unit testing.
     @ExperimentalCoroutinesApi
@@ -34,24 +35,23 @@ class MainViewModelTest {
 
     private val testModelsGenerator: TestModelsGenerator = TestModelsGenerator()
 
+    @Before
+    fun setup(){
+        mainViewModel = MainViewModel(charactersRepo)
+        mainViewModel.charactersLiveData.observeForever { }
+    }
 
     @Test
     fun `get characters List`() {
 
+        // arrange
         val characterModel = testModelsGenerator.generateCharacters()
+        coEvery{ charactersRepo.requestCharacters() } returns Resource.success(characterModel)
 
-        //1- Mock calls
-        coEvery { charactersRepoImp.requestCharacters() } returns Resource.success(characterModel)
-
-
-        //2-Call
-        mainViewModel = MainViewModel(charactersRepoImp)
+        // act
         mainViewModel.getCharactersList()
 
-        //active observer for livedata
-        mainViewModel.charactersLiveData.observeForever { }
-
-        //3-verify
+        // assert
         val isEmptyList = mainViewModel.charactersLiveData.value?.data?.isNullOrEmpty()
         assertEquals(characterModel, mainViewModel.charactersLiveData.value?.data)
         assertEquals(false,isEmptyList)
@@ -59,18 +59,15 @@ class MainViewModelTest {
 
     @Test
     fun `get Empty Character List`(){
+
+        // arrange
         val characterModel = testModelsGenerator.generateCharactersModelWithEmptyList()
+        coEvery { charactersRepo.requestCharacters() } returns Resource.success(characterModel)
 
-        coEvery { charactersRepoImp.requestCharacters() } returns Resource.success(characterModel)
-
-        //2-Call
-        mainViewModel = MainViewModel(charactersRepoImp)
+        // act
         mainViewModel.getCharactersList()
 
-        //active observer for livedata
-        mainViewModel.charactersLiveData.observeForever { }
-
-        //3-verify
+        //assert
         val isEmptyList = mainViewModel.charactersLiveData.value?.data?.isNullOrEmpty()
         assertEquals(characterModel, mainViewModel.charactersLiveData.value?.data)
         assertEquals(true,isEmptyList)
@@ -78,19 +75,16 @@ class MainViewModelTest {
 
     @Test
     fun `get Character Error`(){
+
+        // arrange
         val error: Resource<List<CharactersResponseItem>> = Resource.error(NETWORK_ERROR, null)
+        coEvery { charactersRepo.requestCharacters() } returns error
 
-        //1- Mock calls
-        coEvery { charactersRepoImp.requestCharacters() } returns error
-
-        //2-Call
-        mainViewModel = MainViewModel(charactersRepoImp)
+        // act
+        mainViewModel = MainViewModel(charactersRepo)
         mainViewModel.getCharactersList()
 
-        //active observer for livedata
-        mainViewModel.charactersLiveData.observeForever { }
-
-        //3-verify
+        //assert
         assertEquals(NETWORK_ERROR, mainViewModel.charactersLiveData.value?.message)
     }
 
