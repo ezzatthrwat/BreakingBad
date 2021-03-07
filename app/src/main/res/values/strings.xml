@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Breaking Bad</string>
-    <string name="not_found_characters">not Found Characters</string>
+    <string name="not_found_characters">not Found Characters!</string>
     <string name="years">years</string>
     <string name="months">months</string>
     <string name="days">days</string>
+    <string name="reload">reload</string>
 </resources>

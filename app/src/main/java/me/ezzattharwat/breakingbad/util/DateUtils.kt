@@ -1,7 +1,5 @@
-package me.ezzattharwat.breakingbad.utils
+package me.ezzattharwat.breakingbad.util
 
-import android.content.Context
-import me.ezzattharwat.breakingbad.R
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.Calendar.*
@@ -51,9 +49,9 @@ object DateUtils {
         val current = getInstance().time
         val df = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
 
-      return  "${getDiffYears(df.parse(birthDate), current)} years}, "+
-              "${getDiffMonths(df.parse(birthDate), current)} months}, " +
-              "${getDiffDays(df.parse(birthDate), current)} days}, "
+      return  "${getDiffYears(df.parse(birthDate), current)} years, "+
+              "${getDiffMonths(df.parse(birthDate), current)} months, " +
+              "${getDiffDays(df.parse(birthDate), current)} days, "
     }
 
     private fun getCalendar(date: Date?): Calendar {

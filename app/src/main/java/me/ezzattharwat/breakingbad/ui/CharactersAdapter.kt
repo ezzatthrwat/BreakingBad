@@ -6,15 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import kotlinx.android.synthetic.main.characters_list_item.view.*
 import me.ezzattharwat.breakingbad.R
 import me.ezzattharwat.breakingbad.data.model.CharactersResponseItem
-import me.ezzattharwat.breakingbad.utils.CharactersDiffUtil
-import me.ezzattharwat.breakingbad.utils.DateUtils
-import me.ezzattharwat.breakingbad.utils.toGone
-import me.ezzattharwat.breakingbad.utils.toVisible
+import me.ezzattharwat.breakingbad.util.*
 
 class CharactersAdapter(private val context: Context) : RecyclerView.Adapter<CharactersAdapter.RecipeViewHolder>() {
 
@@ -42,20 +37,14 @@ class CharactersAdapter(private val context: Context) : RecyclerView.Adapter<Cha
 
     inner class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item : CharactersResponseItem) {
+        fun bind(character : CharactersResponseItem) {
 
-            Glide.with(context).load(item.img).diskCacheStrategy(DiskCacheStrategy.ALL).into(itemView.characterImg)
-
-            val characterName = "${item.name} (${item.nickname})"
-
-            itemView.characterNameTV.text = characterName
-
-            if (item.birthday.matches("\\d{2}-\\d{2}-\\d{4}".toRegex())) {
-                itemView.characterAgeTV.text = DateUtils.getLiveAge(item.birthday)
-                itemView.textClockTV.toVisible()
-            } else {
-                itemView.characterAgeTV.text = item.birthday
-                itemView.textClockTV.toGone()
+            with(character){
+                itemView.characterImg.loadImage(context, img)
+                val characterName = "$name (${nickname})"
+                itemView.characterNameTV.text = characterName
+                itemView.characterAgeTV.text = birthday
+                if (!character.birthDateAvailability) itemView.textClockTV.toGone() else itemView.textClockTV.toVisible()
             }
 
         }

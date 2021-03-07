@@ -9,7 +9,7 @@ data class CharactersResponseItem(
     @SerializedName("better_call_saul_appearance")
     val betterCallSaulAppearance: List<Int>,
     @SerializedName("birthday")
-    val birthday: String,
+    var birthday: String,
     @SerializedName("category")
     val category: String,
     @SerializedName("char_id")
@@ -25,5 +25,6 @@ data class CharactersResponseItem(
     @SerializedName("portrayed")
     val portrayed: String,
     @SerializedName("status")
-    val status: String
+    val status: String,
+    var birthDateAvailability: Boolean
 )

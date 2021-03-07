@@ -1,4 +1,4 @@
-package me.ezzattharwat.breakingbad.utils
+package me.ezzattharwat.breakingbad.util
 
 data class Resource<out T>(val status: Status, val data: T?, val message: String?) {
     companion object {
@@ -13,12 +13,6 @@ data class Resource<out T>(val status: Status, val data: T?, val message: String
         fun <T> loading(data: T?): Resource<T> {
             return Resource(Status.LOADING, data, null)
         }
-        fun <T> paginatingLoading(data: T?): Resource<T> {
-            return Resource(Status.PAGINATING_LOADING, data, null)
-        }
-        fun <T> empty(data: T?): Resource<T> {
-            return Resource(Status.EMPTY, data, null)
-        }
     }
 }
 
@@ -26,6 +20,4 @@ enum class Status {
     SUCCESS,
     ERROR,
     LOADING,
-    PAGINATING_LOADING,
-    EMPTY
 }

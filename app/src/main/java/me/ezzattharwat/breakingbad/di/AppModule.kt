@@ -1,14 +1,15 @@
 package me.ezzattharwat.breakingbad.di
 
+import android.content.Context
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import me.ezzattharwat.breakingbad.data.repository.AppRepository
-import me.ezzattharwat.breakingbad.data.repository.AppRepositoryImp
+import me.ezzattharwat.breakingbad.BuildConfig
 import me.ezzattharwat.breakingbad.data.source.remotedata.ApiService
-import me.ezzattharwat.breakingbad.utils.Constant
+import me.ezzattharwat.breakingbad.util.NetworkConnection
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -51,7 +52,7 @@ object AppModule {
     @Singleton
     @Provides
     fun provideApiClient(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
-            .baseUrl(Constant.API_BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(Gson()))
             .build()
@@ -62,6 +63,6 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideAppRepositoryImp(apiService: ApiService) =  AppRepositoryImp(apiService) as AppRepository
+    fun provideNetworkConnection(@ApplicationContext context: Context) : NetworkConnection = NetworkConnection(context = context)
 
 }

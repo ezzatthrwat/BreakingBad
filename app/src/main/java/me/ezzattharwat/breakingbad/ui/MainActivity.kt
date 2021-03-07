@@ -5,15 +5,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import me.ezzattharwat.breakingbad.R
 import me.ezzattharwat.breakingbad.data.model.CharactersResponseItem
-import me.ezzattharwat.breakingbad.utils.*
-import timber.log.Timber
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.util.*
+import me.ezzattharwat.breakingbad.util.*
 import javax.inject.Inject
 
 
@@ -32,9 +29,10 @@ class MainActivity : AppCompatActivity() {
 
         observeViewModel()
         setupRecyclerView()
-        mainViewModel.getCharactersList()
 
+        mainViewModel.getCharactersList()
     }
+
 
     private fun setupRecyclerView(){
 
@@ -46,40 +44,52 @@ class MainActivity : AppCompatActivity() {
         charactersRV.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                val totalItemCount = layoutManager.itemCount
-                val visibleItemCount = layoutManager.childCount
-                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-
-                mainViewModel.listScrolled(visibleItemCount, lastVisibleItem, totalItemCount)
+                if (dy > 0) {
+                    mainViewModel.fetchMoreCharacters(
+                            visibleItemCount = layoutManager.childCount,
+                            lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition(),
+                            totalItemCount = layoutManager.itemCount)
+                }
             }
         })
 
     }
 
-    private fun observeOnCharactersList(resource: Resource<List<CharactersResponseItem>>){
+    private fun observeOnCharactersList(resource : Resource<List<CharactersResponseItem>>){
 
         when (resource.status) {
             Status.LOADING -> {
-                charactersPB.toVisible()
-            }
-            Status.PAGINATING_LOADING -> {
-                charactersBottomPB.toVisible()
+                charactersRV.adapter?.let {
+                    if (it.itemCount == 0 ) {
+                        charactersPB.toVisible()
+                    }
+                }
             }
             Status.SUCCESS -> {
                 charactersPB.toGone()
-                charactersBottomPB.toGone()
                 resource.data?.let {
-                    charactersAdapter.setData(it)
+                    if (it.isNotEmpty()) {
+                        charactersRV.toVisible()
+                        charactersAdapter.setData(it)
+                    }else {
+                        emptyTV.toVisible()
+                        charactersRV.toGone()
+                    }
                 }
 
             }
-            Status.EMPTY -> {
-                charactersPB.toGone()
-                emptyTV.toVisible()
-            }
             Status.ERROR -> {
                 charactersPB.toGone()
-                resource.message?.let { showToast(this, it) }
+                charactersRV.toGone()
+                resource.message?.let {
+                    homeRoot.showSnackbar(
+                        it,
+                        Snackbar.LENGTH_INDEFINITE) {
+                        mainViewModel.getCharactersList()
+                    }
+                }
+
+
             }
         }
     }
