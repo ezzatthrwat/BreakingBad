@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
                 resource.data?.let {
                     if (it.isNotEmpty()) {
                         charactersRV.toVisible()
-                        charactersAdapter.setData(it)
+                        charactersAdapter.submitList(it)
                     }else {
                         emptyTV.toVisible()
                         charactersRV.toGone()

@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-platform-android'
     id 'dagger.hilt.android.plugin'
+    id("io.gitlab.arturbosch.detekt").version("1.16.0-RC3")
 }
 
 android {
@@ -65,7 +66,43 @@ android {
             }
         }
     }
+
+    detekt {
+        toolVersion = "1.16.0-RC3"                                 // Version of Detekt that will be used. When unspecified the latest detekt version found will be used. Override to stay on the same version.
+        input = files("src/main/java")                                // The directories where detekt looks for source files. Defaults to `files("src/main/java", "src/main/kotlin")`.
+        parallel = true                                      // Builds the AST in parallel. Rules are always executed in parallel. Can lead to speedups in larger projects. `false` by default.
+        config = files("path/to/config.yml")                  // Define the detekt configuration(s) you want to use. Defaults to the default detekt configuration.
+        buildUponDefaultConfig = true                        // Interpret config files as updates to the default config. `false` by default.
+        baseline = file("path/to/baseline.xml")               // Specifying a baseline file. All findings stored in this file in subsequent runs of detekt.
+        disableDefaultRuleSets = false                        // Disables all default detekt rulesets and will only run detekt with custom rules defined in plugins passed in with `detektPlugins` configuration. `false` by default.
+        debug = true                                         // Adds debug output during task execution. `false` by default.
+        basePath = projectDir                                 // Specify the base path for file paths in the formatted reports. If not set, all file paths reported will be absolute file path.
+        reports {
+            xml {
+                enabled = true                                // Enable/Disable XML report (default: true)
+                destination = file("build/reports/detekt.xml") // Path where XML report will be stored (default: `build/reports/detekt/detekt.xml`)
+            }
+            html {
+                enabled = true                                // Enable/Disable HTML report (default: true)
+                destination = file("build/reports/detekt.html") // Path where HTML report will be stored (default: `build/reports/detekt/detekt.html`)
+            }
+            txt {
+                enabled = true                                // Enable/Disable TXT report (default: true)
+                destination = file("build/reports/detekt.txt") // Path where TXT report will be stored (default: `build/reports/detekt/detekt.txt`)
+            }
+            sarif {
+                enabled = true                                // Enable/Disable SARIF report (default: false)
+                destination = file("build/reports/detekt.sarif") // Path where SARIF report will be stored (default: `build/reports/detekt/detekt.sarif`)
+            }
+            custom {
+                reportId = "CustomJsonReport"                   // The simple class name of your custom report.
+                destination = file("build/reports/detekt.json") // Path where report will be stored
+            }
+        }
+    }
 }
+
+
 
 dependencies {
 
@@ -127,6 +164,8 @@ dependencies {
 
     // Timber
     implementation "com.jakewharton.timber:timber:$timberVersion"
+
+    detektPlugins "io.gitlab.arturbosch.detekt:detekt-formatting:1.16.0-RC3"
 }
 kapt {
     correctErrorTypes true

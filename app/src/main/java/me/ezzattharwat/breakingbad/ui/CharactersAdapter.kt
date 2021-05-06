@@ -4,24 +4,15 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.characters_list_item.view.*
 import me.ezzattharwat.breakingbad.R
 import me.ezzattharwat.breakingbad.data.model.CharactersResponseItem
 import me.ezzattharwat.breakingbad.util.*
 
-class CharactersAdapter(private val context: Context) : RecyclerView.Adapter<CharactersAdapter.RecipeViewHolder>() {
-
-    private var characters: List<CharactersResponseItem> = emptyList()
-
-    fun setData(newCharacters: List<CharactersResponseItem>){
-        val diffCallback = CharactersDiffUtil(characters, newCharacters)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        characters = diffCallback.getNewItems()
-        diffResult.dispatchUpdatesTo(this)
-
-    }
+class CharactersAdapter(private val context: Context)
+    : ListAdapter<CharactersResponseItem, CharactersAdapter.RecipeViewHolder>(CharactersDiffUtil()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
@@ -30,10 +21,9 @@ class CharactersAdapter(private val context: Context) : RecyclerView.Adapter<Cha
     }
 
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
-        holder.bind(characters[position])
+        holder.bind(getItem(position))
     }
 
-    override fun getItemCount(): Int = characters.size
 
     inner class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -49,4 +39,8 @@ class CharactersAdapter(private val context: Context) : RecyclerView.Adapter<Cha
 
         }
     }
+
+
+
 }
+
