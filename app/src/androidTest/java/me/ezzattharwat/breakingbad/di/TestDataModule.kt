@@ -6,6 +6,7 @@ import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
 import me.ezzattharwat.breakingbad.TestDataRepository
 import me.ezzattharwat.breakingbad.data.repository.CharactersRepo
+import me.ezzattharwat.breakingbad.di.DataModule
 import javax.inject.Singleton
 
 @Module
@@ -17,6 +18,6 @@ object TestDataModule {
 
     @Singleton
     @Provides
-    fun provideCharacterRepository() =  TestDataRepository() as CharactersRepo
+    fun provideCharacterRepository() =  TestDataRepository() as me.ezzattharwat.breakingbad.data.repository.CharactersRepo
 
-}
+ }

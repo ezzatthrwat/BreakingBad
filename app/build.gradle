@@ -102,12 +102,14 @@ android {
     }
 }
 
-
-
 dependencies {
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation project(path: ':core')
+    implementation project(path: ':core_utils')
+    implementation project(path: ':NetWorkConnection')
+
     implementation "androidx.appcompat:appcompat:$appcompactVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "com.google.android.material:material:$materialVersion"
     implementation "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion"
     androidTestImplementation "androidx.test.ext:junit-ktx:$androidXJunitVersion"
@@ -118,7 +120,6 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-intents:$espressoIntentsVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesTestVersion"
     implementation "androidx.arch.core:core-testing:$coreTestingVersion"
-    implementation "androidx.test.espresso:espresso-idling-resource:$espressoVersion"
     implementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
 
     //webservice Setup

@@ -4,11 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import me.ezzattharwat.breakingbad.data.model.CharactersResponseItem
-import me.ezzattharwat.breakingbad.data.repository.CharactersRepo
-import me.ezzattharwat.breakingbad.util.Errors.NETWORK_ERROR
+import me.ezzattharwat.breakingbad.NetworkConnection
+import me.ezzattharwat.breakingbad.domain.CharactersResponseItem
+import me.ezzattharwat.breakingbad.core_utils.util.Errors.NETWORK_ERROR
 import me.ezzattharwat.breakingbad.util.MainCoroutineRule
-import me.ezzattharwat.breakingbad.util.Resource
+import me.ezzattharwat.breakingbad.core_utils.util.Resource
+import me.ezzattharwat.breakingbad.data.repository.CharactersRepo
 import me.ezzattharwat.breakingbad.util.TestModelsGenerator
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -23,6 +24,7 @@ class MainViewModelTest {
 
     // Use a fake UseCase to be injected into the viewModel
     private val charactersRepo: CharactersRepo = mockk()
+
 
     // Set the main coroutines dispatcher for unit testing.
     @ExperimentalCoroutinesApi
@@ -46,7 +48,7 @@ class MainViewModelTest {
 
         // arrange
         val characterModel = testModelsGenerator.generateCharacters()
-        coEvery{ charactersRepo.requestCharacters() } returns Resource.success(characterModel)
+        coEvery{ charactersRepo.requestCharacters() } returns me.ezzattharwat.breakingbad.core_utils.util.Resource.success(characterModel)
 
         // act
         mainViewModel.getCharactersList()
@@ -62,7 +64,7 @@ class MainViewModelTest {
 
         // arrange
         val characterModel = testModelsGenerator.generateCharactersModelWithEmptyList()
-        coEvery { charactersRepo.requestCharacters() } returns Resource.success(characterModel)
+        coEvery { charactersRepo.requestCharacters() } returns me.ezzattharwat.breakingbad.core_utils.util.Resource.success(characterModel)
 
         // act
         mainViewModel.getCharactersList()
@@ -77,11 +79,10 @@ class MainViewModelTest {
     fun `get Character Error`(){
 
         // arrange
-        val error: Resource<List<CharactersResponseItem>> = Resource.error(NETWORK_ERROR, null)
+        val error: me.ezzattharwat.breakingbad.core_utils.util.Resource<List<CharactersResponseItem>> = me.ezzattharwat.breakingbad.core_utils.util.Resource.error(NETWORK_ERROR, null)
         coEvery { charactersRepo.requestCharacters() } returns error
 
         // act
-        mainViewModel = MainViewModel(charactersRepo)
         mainViewModel.getCharactersList()
 
         //assert

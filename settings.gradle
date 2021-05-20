@@ -1,2 +1,5 @@
 include ':app'
 rootProject.name = "BreakingBad"
+include ':core'
+include ':core_utils'
+include ':NetWorkConnection'

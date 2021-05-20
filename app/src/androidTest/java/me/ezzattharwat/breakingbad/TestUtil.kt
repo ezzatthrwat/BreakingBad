@@ -3,15 +3,16 @@ package me.ezzattharwat.breakingbad
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.Gson
-import me.ezzattharwat.breakingbad.data.model.CharactersResponse
+import me.ezzattharwat.breakingbad.domain.CharactersResponse
 import java.io.InputStream
 
 
 object TestUtil {
     var dataStatus: DataStatus = DataStatus.Success
-    var characters: CharactersResponse = CharactersResponse()
-    fun initData(): CharactersResponse {
-        val response =  Gson().fromJson(getJson("CharacterResponse.json"), CharactersResponse::class.java)
+    var characters: me.ezzattharwat.breakingbad.domain.CharactersResponse =
+        me.ezzattharwat.breakingbad.domain.CharactersResponse()
+    fun initData(): me.ezzattharwat.breakingbad.domain.CharactersResponse {
+        val response =  Gson().fromJson(getJson("CharacterResponse.json"), me.ezzattharwat.breakingbad.domain.CharactersResponse::class.java)
         characters = response
         return response
     }

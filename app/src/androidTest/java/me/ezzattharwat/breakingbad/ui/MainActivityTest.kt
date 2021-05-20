@@ -12,8 +12,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import me.ezzattharwat.breakingbad.DataStatus
 import me.ezzattharwat.breakingbad.R
 import me.ezzattharwat.breakingbad.TestUtil.dataStatus
-import me.ezzattharwat.breakingbad.util.Errors.NETWORK_ERROR
-import me.ezzattharwat.breakingbad.util.EspressoIdlingResource
+import me.ezzattharwat.breakingbad.core_utils.util.Errors.NETWORK_ERROR
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers
 import org.junit.After
@@ -36,7 +35,7 @@ class MainActivityTest {
 
     @Before
     fun setup() {
-        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
+        IdlingRegistry.getInstance().register(me.ezzattharwat.breakingbad.util.EspressoIdlingResource.countingIdlingResource)
     }
 
     @Test

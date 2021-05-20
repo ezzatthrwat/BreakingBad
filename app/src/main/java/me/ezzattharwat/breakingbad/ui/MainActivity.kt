@@ -9,7 +9,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import me.ezzattharwat.breakingbad.R
-import me.ezzattharwat.breakingbad.data.model.CharactersResponseItem
+import me.ezzattharwat.breakingbad.domain.CharactersResponseItem
 import me.ezzattharwat.breakingbad.util.*
 import javax.inject.Inject
 
@@ -55,17 +55,17 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun observeOnCharactersList(resource : Resource<List<CharactersResponseItem>>){
+    private fun observeOnCharactersList(resource : me.ezzattharwat.breakingbad.core_utils.util.Resource<List<CharactersResponseItem>>){
 
         when (resource.status) {
-            Status.LOADING -> {
+            me.ezzattharwat.breakingbad.core_utils.util.Status.LOADING -> {
                 charactersRV.adapter?.let {
                     if (it.itemCount == 0 ) {
                         charactersPB.toVisible()
                     }
                 }
             }
-            Status.SUCCESS -> {
+            me.ezzattharwat.breakingbad.core_utils.util.Status.SUCCESS -> {
                 charactersPB.toGone()
                 resource.data?.let {
                     if (it.isNotEmpty()) {
@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
             }
-            Status.ERROR -> {
+            me.ezzattharwat.breakingbad.core_utils.util.Status.ERROR -> {
                 charactersPB.toGone()
                 charactersRV.toGone()
                 resource.message?.let {

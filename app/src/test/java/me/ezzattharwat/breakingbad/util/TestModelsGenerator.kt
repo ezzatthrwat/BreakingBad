@@ -1,31 +1,25 @@
 package me.ezzattharwat.breakingbad.util
 
 import com.google.gson.Gson
-import me.ezzattharwat.breakingbad.data.model.CharactersResponse
-import me.ezzattharwat.breakingbad.data.model.CharactersResponseItem
+import me.ezzattharwat.breakingbad.domain.CharactersResponse
 import java.io.File
 
-
-/**
- * Created by AhmedEltaher
- */
-
 class TestModelsGenerator {
-    private var characters: CharactersResponse
+    private var characters: me.ezzattharwat.breakingbad.domain.CharactersResponse
 
     init {
-        characters =  Gson().fromJson(getJson("CharacterResponse.json"), CharactersResponse::class.java)
+        characters =  Gson().fromJson(getJson("CharacterResponse.json"), me.ezzattharwat.breakingbad.domain.CharactersResponse::class.java)
 //        print("this is $characters")
     }
 
-    fun generateCharacters(): CharactersResponse {
+    fun generateCharacters(): me.ezzattharwat.breakingbad.domain.CharactersResponse {
         return characters
     }
 
-    fun generateCharactersModelWithEmptyList(): CharactersResponse {
+    fun generateCharactersModelWithEmptyList(): me.ezzattharwat.breakingbad.domain.CharactersResponse {
 
-        print("this is ${CharactersResponse()}")
-        return CharactersResponse()
+        print("this is ${me.ezzattharwat.breakingbad.domain.CharactersResponse()}")
+        return me.ezzattharwat.breakingbad.domain.CharactersResponse()
     }
 
 

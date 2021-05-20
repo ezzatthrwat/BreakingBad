@@ -1,7 +1,5 @@
 package me.ezzattharwat.breakingbad.util
 
-import androidx.test.espresso.IdlingResource
-
 
 /**
  * Contains a static reference to [IdlingResource], only available in the 'mock' build type.

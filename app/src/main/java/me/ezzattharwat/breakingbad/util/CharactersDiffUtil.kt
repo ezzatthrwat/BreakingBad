@@ -1,7 +1,7 @@
 package me.ezzattharwat.breakingbad.util
 
 import androidx.recyclerview.widget.DiffUtil
-import me.ezzattharwat.breakingbad.data.model.CharactersResponseItem
+import me.ezzattharwat.breakingbad.domain.CharactersResponseItem
 
 class CharactersDiffUtil  : DiffUtil.ItemCallback<CharactersResponseItem> () {
 
