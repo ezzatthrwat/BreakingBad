@@ -23,15 +23,14 @@ Breaking Bad App gives you the ability to observe on actors' live age
 <h2>Programming Practices Followed</h2>
 
 a) Android Architectural Components
-b) MVVM Architecture and Repository pattern
-c) Dagger Hilt
-d) coroutines
-e) Retrofit and OKhttp
-f) Espresso for ui testing
-g) Mockk and Junit for unit testing
-i) Using RecyclerView ListAdapter
-j) using Modularization
-
+<br>b) MVVM Architecture and Repository pattern
+<br>c) Dagger Hilt
+<br>d) coroutines
+<br>e) Retrofit and OKhttp
+<br>f) Espresso for ui testing
+<br>g) Mockk and Junit for unit testing
+<br>i) Using RecyclerView ListAdapter
+<br>j) using Modularization
 
 <h2>Contributing</h2>
 
